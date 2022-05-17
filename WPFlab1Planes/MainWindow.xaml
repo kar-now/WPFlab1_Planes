@@ -1,0 +1,110 @@
+﻿<Window x:Class="WPFlab1Planes.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFlab1Planes"
+        mc:Ignorable="d"
+        Title="Planes" Height="450" Width="800" WindowStartupLocation="CenterScreen" MinWidth="600" MaxWidth="600" MinHeight="350" MaxHeight="350">
+    <Window.Resources>
+        <local:Dateconverter x:Key="date"/>
+        <local:crewlistconverter x:Key="crew"/>
+        <Style x:Key="flighttextstyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+        </Style>
+        <Style x:Key="textblockstyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+        </Style>
+
+        <Style x:Key="textbloconlyalign" TargetType="{x:Type TextBlock}">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <GroupBox  Grid.Column="0" Header="Flight list" Margin="5,5,5,5">
+            <ListView Name="flightlist">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Number}" Style="{StaticResource flighttextstyle}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </GroupBox>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+                <GroupBox  Grid.Row="0" Header="Origin Airport" Margin="5,5,5,5">
+                    <TextBlock  Style="{StaticResource textblockstyle}" Text="{Binding ElementName=flightlist, Path=SelectedItem.Origin}"/>
+                </GroupBox>
+                <GroupBox  Grid.Row="1" Header="Destination Airport" Margin="5,5,5,5">
+                    <TextBlock  Style="{StaticResource textblockstyle}" Text="{Binding ElementName=flightlist, Path=SelectedItem.Destination}"/>
+                </GroupBox>
+                <GroupBox  Grid.Row="2" Header="Crew List" Margin="5,5,5,5">
+                    <ListView x:Name="crewlist" ItemsSource="{Binding ElementName=flightlist, Path=SelectedItem.Members}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Style="{StaticResource textblockstyle}">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource crew}" Mode="OneWay">
+                                                <Binding Path="Name" />
+                                                <Binding Path="Surname" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </GroupBox>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <GroupBox  Grid.Row="0" Header="Duration" Margin="5,5,5,5">
+                    <TextBlock Style="{StaticResource textbloconlyalign}" Text="{Binding ElementName=flightlist , Path=SelectedItem.Duration, Converter={StaticResource date}}" />
+                </GroupBox>
+                <GroupBox  Grid.Row="1" Header="Age" Margin="5,5,5,5">
+                    <TextBlock  Style="{StaticResource textbloconlyalign}" Text="{Binding ElementName=crewlist, Path=SelectedItem.Age}"/>
+                </GroupBox>
+                <GroupBox  Grid.Row="2" Header="Role" Margin="5,5,5,5">
+                    <TextBlock  Style="{StaticResource textbloconlyalign}" Text="{Binding ElementName=crewlist, Path=SelectedItem.Role}"/>
+                </GroupBox>
+            </Grid>
+        </Grid>
+
+    </Grid>
+</Window>
